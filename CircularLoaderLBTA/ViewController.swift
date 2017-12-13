@@ -10,15 +10,18 @@ import UIKit
 
 class ViewController: UIViewController {
     
-    let percentageLabel: UILabel = {
+    lazy var percentageLabel: UILabel = {
         let label = UILabel()
         label.text = "Start"
         label.textAlignment = .center
         label.font = UIFont.boldSystemFont(ofSize: 32)
         label.textColor = .white
+        label.frame = CGRect(x: 0, y: 0, width: 100, height: 100)
+        label.center = self.view.center
+        self.view.addSubview(label)
         return label
     }()
-
+    
     
     lazy var shapeLayer: CAShapeLayer = {
         let layer = CAShapeLayer()
@@ -40,18 +43,22 @@ class ViewController: UIViewController {
         layer.position = self.view.center
         return layer
     }()
-   
-     let urlString =  "http://ipv4.download.thinkbroadband.com/5MB.zip"
+    
+    let urlString =  "http://ipv4.download.thinkbroadband.com/5MB.zip"
     //let urlString = "https://firebasestorage.googleapis.com/v0/b/firestorechat-e64ac.appspot.com/o/intermediate_training_rec.mp4?alt=media&token=e20261d0-7219-49d2-b32d-367e1606500c"
+    
+    override var preferredStatusBarStyle: UIStatusBarStyle {
+        return .lightContent
+    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        view.backgroundColor = .black
+        view.backgroundColor = UIColor.backgroundColor
         
-        view.addSubview(percentageLabel)
-        percentageLabel.frame = CGRect(x: 0, y: 0, width: 100, height: 100)
-        percentageLabel.center = view.center
+        //        view.addSubview(percentageLabel)
+        //        percentageLabel.frame = CGRect(x: 0, y: 0, width: 100, height: 100)
+        //        percentageLabel.center = view.center
         
         let circularPath = UIBezierPath(arcCenter: .zero, radius: 100, startAngle: 0, endAngle: 2 * .pi, clockwise: true)
         
@@ -63,7 +70,7 @@ class ViewController: UIViewController {
         
         view.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(handleTap(_:))))
     }
-
+    
     fileprivate func animateCircle() {
         let basicAnimation = CABasicAnimation(keyPath: "strokeEnd")
         
@@ -81,7 +88,6 @@ class ViewController: UIViewController {
         //animateCircle()
     }
 }
-
 extension ViewController: URLSessionDownloadDelegate {
     
     private func beginDownloadingFile() {
@@ -108,8 +114,8 @@ extension ViewController: URLSessionDownloadDelegate {
             self.percentageLabel.text = "\(Int64(percentage * 100))%"
             self.shapeLayer.strokeEnd = percentage
         }
-
-      //print(percentage)
+        
+        //print(percentage)
     }
 }
 
