@@ -10,38 +10,17 @@ import UIKit
 
 class ViewController: UIViewController {
     
-    lazy var percentageLabel: UILabel = {
+    var pulsatingLayer: CAShapeLayer!
+    var shapeLayer: CAShapeLayer!
+    var trackLayer: CAShapeLayer!
+    
+    let percentageLabel: UILabel = {
         let label = UILabel()
         label.text = "Start"
         label.textAlignment = .center
         label.font = UIFont.boldSystemFont(ofSize: 32)
         label.textColor = .white
-        label.frame = CGRect(x: 0, y: 0, width: 100, height: 100)
-        label.center = self.view.center
-        self.view.addSubview(label)
         return label
-    }()
-    
-    
-    lazy var shapeLayer: CAShapeLayer = {
-        let layer = CAShapeLayer()
-        layer.strokeColor = UIColor.red.cgColor
-        layer.fillColor = UIColor.clear.cgColor
-        layer.lineWidth = 10
-        layer.lineCap = kCALineCapRound
-        layer.strokeEnd = 0
-        layer.position = self.view.center
-        layer.transform = CATransform3DMakeRotation(-.pi / 2, 0, 0, 1)
-        return layer
-    }()
-    
-    lazy var trackLayer: CAShapeLayer = {
-        let layer = CAShapeLayer()
-        layer.strokeColor = UIColor.lightGray.cgColor
-        layer.fillColor = UIColor.clear.cgColor
-        layer.lineWidth = 10
-        layer.position = self.view.center
-        return layer
     }()
     
     let urlString =  "http://ipv4.download.thinkbroadband.com/5MB.zip"
@@ -56,19 +35,57 @@ class ViewController: UIViewController {
         
         view.backgroundColor = UIColor.backgroundColor
         
-        //        view.addSubview(percentageLabel)
-        //        percentageLabel.frame = CGRect(x: 0, y: 0, width: 100, height: 100)
-        //        percentageLabel.center = view.center
+        setupCircleLayers()
         
-        let circularPath = UIBezierPath(arcCenter: .zero, radius: 100, startAngle: 0, endAngle: 2 * .pi, clockwise: true)
-        
-        shapeLayer.path = circularPath.cgPath
-        trackLayer.path = circularPath.cgPath
-        
-        view.layer.addSublayer(trackLayer)
-        view.layer.addSublayer(shapeLayer)
+        setupPercentageLabel()
         
         view.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(handleTap(_:))))
+    }
+    
+    private func setupPercentageLabel() {
+        view.addSubview(percentageLabel)
+        percentageLabel.frame = CGRect(x: 0, y: 0, width: 100, height: 100)
+        percentageLabel.center = view.center
+    }
+    
+    
+    private func setupCircleLayers() {
+        pulsatingLayer = createCircleShapeLayer(strokeColor: .clear, fillColor: UIColor.pulsatingFillColor)
+        view.layer.addSublayer(pulsatingLayer)
+        animatePulsatingLayer()
+        
+        let trackLayer = createCircleShapeLayer(strokeColor: .trackStrokeColor, fillColor: .backgroundColor)
+        view.layer.addSublayer(trackLayer)
+        
+        shapeLayer = createCircleShapeLayer(strokeColor: .outlineStrokeColor, fillColor: .clear)
+        
+        shapeLayer.transform = CATransform3DMakeRotation(-.pi / 2, 0, 0, 1)
+        shapeLayer.strokeEnd = 0
+        view.layer.addSublayer(shapeLayer)
+    }
+    
+    private func createCircleShapeLayer(strokeColor: UIColor, fillColor: UIColor) -> CAShapeLayer {
+        let layer = CAShapeLayer()
+        let circularPath = UIBezierPath(arcCenter: .zero, radius: 100, startAngle: 0, endAngle: 2 * .pi, clockwise: true)
+        layer.path = circularPath.cgPath
+        layer.strokeColor = strokeColor.cgColor
+        layer.lineWidth = 20
+        layer.fillColor = fillColor.cgColor
+        layer.lineCap = kCALineCapRound
+        layer.position = view.center
+        return layer
+    }
+    
+    private func animatePulsatingLayer() {
+        let animation = CABasicAnimation(keyPath: "transform.scale")
+        
+        animation.toValue = 1.5
+        animation.duration = 0.8
+        animation.timingFunction = CAMediaTimingFunction(name: kCAMediaTimingFunctionEaseOut)
+        animation.autoreverses = true
+        animation.repeatCount = .infinity
+        
+        pulsatingLayer.add(animation, forKey: "pulsing")
     }
     
     fileprivate func animateCircle() {
@@ -114,8 +131,6 @@ extension ViewController: URLSessionDownloadDelegate {
             self.percentageLabel.text = "\(Int64(percentage * 100))%"
             self.shapeLayer.strokeEnd = percentage
         }
-        
-        //print(percentage)
     }
 }
 
