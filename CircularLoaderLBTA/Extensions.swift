@@ -20,3 +20,8 @@ extension UIColor {
     static let pulsatingFillColor = UIColor.rgb(r: 86, g: 30, b: 63)
 }
 
+extension UIView{
+    func addSubLayers(_ layers: CAShapeLayer...) {
+        layers.forEach { self.layer.addSublayer($0) }
+    }
+}

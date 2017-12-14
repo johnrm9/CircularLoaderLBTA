@@ -12,7 +12,6 @@ class ViewController: UIViewController {
     
     var pulsatingLayer: CAShapeLayer!
     var shapeLayer: CAShapeLayer!
-    var trackLayer: CAShapeLayer!
     
     let percentageLabel: UILabel = {
         let label = UILabel()
@@ -33,35 +32,43 @@ class ViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        setupNotificationObservers()
+        
         view.backgroundColor = UIColor.backgroundColor
         
         setupCircleLayers()
+        
+        animatePulsatingLayer()
         
         setupPercentageLabel()
         
         view.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(handleTap(_:))))
     }
     
+    private func setupNotificationObservers() {
+        NotificationCenter.default.addObserver(self, selector: #selector(handleEnterForeground), name: .UIApplicationWillEnterForeground, object: nil)
+    }
+
+    @objc private func handleEnterForeground() {
+        animatePulsatingLayer()
+    }
+
     private func setupPercentageLabel() {
         view.addSubview(percentageLabel)
         percentageLabel.frame = CGRect(x: 0, y: 0, width: 100, height: 100)
         percentageLabel.center = view.center
     }
     
-    
     private func setupCircleLayers() {
         pulsatingLayer = createCircleShapeLayer(strokeColor: .clear, fillColor: UIColor.pulsatingFillColor)
-        view.layer.addSublayer(pulsatingLayer)
-        animatePulsatingLayer()
         
         let trackLayer = createCircleShapeLayer(strokeColor: .trackStrokeColor, fillColor: .backgroundColor)
-        view.layer.addSublayer(trackLayer)
         
         shapeLayer = createCircleShapeLayer(strokeColor: .outlineStrokeColor, fillColor: .clear)
-        
         shapeLayer.transform = CATransform3DMakeRotation(-.pi / 2, 0, 0, 1)
         shapeLayer.strokeEnd = 0
-        view.layer.addSublayer(shapeLayer)
+        
+        view.addSubLayers(pulsatingLayer, trackLayer, shapeLayer)
     }
     
     private func createCircleShapeLayer(strokeColor: UIColor, fillColor: UIColor) -> CAShapeLayer {
