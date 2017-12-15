@@ -27,7 +27,7 @@ extension UIView{
 }
 
 extension CATransform3D {
-    static var rotateToTop: CATransform3D {
-        return CATransform3DMakeRotation(-.pi / 2, 0, 0, 1)
+    static func rotateBy(_ angle: CGFloat) -> CATransform3D {
+        return CATransform3DMakeRotation(angle, 0, 0, 1)
     }
 }

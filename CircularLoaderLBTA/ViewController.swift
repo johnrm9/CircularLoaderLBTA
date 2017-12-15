@@ -10,10 +10,10 @@ import UIKit
 
 class ViewController: UIViewController {
     
-    var pulsatingLayer: CAShapeLayer!
-    var shapeLayer: CAShapeLayer!
+    private var pulsatingLayer: CAShapeLayer!
+    private var shapeLayer: CAShapeLayer!
     
-    let percentageLabel: UILabel = {
+    private let percentageLabel: UILabel = {
         let label = UILabel()
         label.text = "Start"
         label.textAlignment = .center
@@ -22,7 +22,7 @@ class ViewController: UIViewController {
         return label
     }()
     
-    let urlString =  "http://ipv4.download.thinkbroadband.com/5MB.zip"
+    private let urlString =  "http://ipv4.download.thinkbroadband.com/5MB.zip"
     //let urlString = "https://firebasestorage.googleapis.com/v0/b/firestorechat-e64ac.appspot.com/o/intermediate_training_rec.mp4?alt=media&token=e20261d0-7219-49d2-b32d-367e1606500c"
     
     override var preferredStatusBarStyle: UIStatusBarStyle {
@@ -60,11 +60,11 @@ class ViewController: UIViewController {
     }
     
     private func setupCircleLayers() {
-        pulsatingLayer = createCircleShapeLayer(fillColor: UIColor.pulsatingFillColor)
+        pulsatingLayer = createCircleShapeLayer(fillColor: .pulsatingFillColor)
         
         let trackLayer = createCircleShapeLayer(strokeColor: .trackStrokeColor, fillColor: .backgroundColor)
         
-        shapeLayer = createCircleShapeLayer(strokeColor: .outlineStrokeColor, strokeEnd: 0, transform: .rotateToTop)
+        shapeLayer = createCircleShapeLayer(strokeColor: .outlineStrokeColor, strokeEnd: 0, transform: .rotateBy(-.pi / 2))
         
         self.view.addSubLayers(pulsatingLayer, trackLayer, shapeLayer)
     }
