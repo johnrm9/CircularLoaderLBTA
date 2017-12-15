@@ -25,3 +25,9 @@ extension UIView{
         layers.forEach { self.layer.addSublayer($0) }
     }
 }
+
+extension CATransform3D {
+    static var rotateToTop: CATransform3D {
+        return CATransform3DMakeRotation(-.pi / 2, 0, 0, 1)
+    }
+}

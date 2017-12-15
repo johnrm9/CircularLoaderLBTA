@@ -17,7 +17,7 @@ class ViewController: UIViewController {
         let label = UILabel()
         label.text = "Start"
         label.textAlignment = .center
-        label.font = UIFont.boldSystemFont(ofSize: 32)
+        label.font = .boldSystemFont(ofSize: 32)
         label.textColor = .white
         return label
     }()
@@ -34,7 +34,7 @@ class ViewController: UIViewController {
         
         setupNotificationObservers()
         
-        view.backgroundColor = UIColor.backgroundColor
+        view.backgroundColor = .backgroundColor
         
         setupCircleLayers()
         
@@ -56,30 +56,30 @@ class ViewController: UIViewController {
     private func setupPercentageLabel() {
         view.addSubview(percentageLabel)
         percentageLabel.frame = CGRect(x: 0, y: 0, width: 100, height: 100)
-        percentageLabel.center = view.center
+        percentageLabel.center = self.view.center
     }
     
     private func setupCircleLayers() {
-        pulsatingLayer = createCircleShapeLayer(strokeColor: .clear, fillColor: UIColor.pulsatingFillColor)
+        pulsatingLayer = createCircleShapeLayer(fillColor: UIColor.pulsatingFillColor)
         
         let trackLayer = createCircleShapeLayer(strokeColor: .trackStrokeColor, fillColor: .backgroundColor)
         
-        shapeLayer = createCircleShapeLayer(strokeColor: .outlineStrokeColor, fillColor: .clear)
-        shapeLayer.transform = CATransform3DMakeRotation(-.pi / 2, 0, 0, 1)
-        shapeLayer.strokeEnd = 0
+        shapeLayer = createCircleShapeLayer(strokeColor: .outlineStrokeColor, strokeEnd: 0, transform: .rotateToTop)
         
-        view.addSubLayers(pulsatingLayer, trackLayer, shapeLayer)
+        self.view.addSubLayers(pulsatingLayer, trackLayer, shapeLayer)
     }
-    
-    private func createCircleShapeLayer(strokeColor: UIColor, fillColor: UIColor) -> CAShapeLayer {
+   
+    private func createCircleShapeLayer(strokeColor: UIColor = .clear, fillColor: UIColor = .clear, strokeEnd: CGFloat = 1.0, transform: CATransform3D = CATransform3DIdentity) -> CAShapeLayer {
         let layer = CAShapeLayer()
         let circularPath = UIBezierPath(arcCenter: .zero, radius: 100, startAngle: 0, endAngle: 2 * .pi, clockwise: true)
         layer.path = circularPath.cgPath
         layer.strokeColor = strokeColor.cgColor
         layer.lineWidth = 20
         layer.fillColor = fillColor.cgColor
+        layer.strokeEnd = strokeEnd
+        layer.transform = transform
         layer.lineCap = kCALineCapRound
-        layer.position = view.center
+        layer.position = self.view.center
         return layer
     }
     
@@ -107,7 +107,11 @@ class ViewController: UIViewController {
     }
     
     @objc private func handleTap(_ recognizer: UITapGestureRecognizer) {
-        beginDownloadingFile()
+        
+        switch recognizer.state {
+        case .ended: beginDownloadingFile()
+        default: break
+        }
         
         //animateCircle()
     }
