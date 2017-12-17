@@ -19,6 +19,7 @@ class ViewController: UIViewController {
         label.textAlignment = .center
         label.font = .boldSystemFont(ofSize: 32)
         label.textColor = .white
+        label.translatesAutoresizingMaskIntoConstraints = false
         return label
     }()
     
@@ -55,8 +56,10 @@ class ViewController: UIViewController {
 
     private func setupPercentageLabel() {
         view.addSubview(percentageLabel)
-        percentageLabel.frame = CGRect(x: 0, y: 0, width: 100, height: 100)
-        percentageLabel.center = self.view.center
+        percentageLabel.widthAnchor.constraint(equalToConstant: 100).isActive = true
+        percentageLabel.heightAnchor.constraint(equalToConstant: 100).isActive = true
+        percentageLabel.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
+        percentageLabel.centerYAnchor.constraint(equalTo: view.centerYAnchor).isActive = true
     }
     
     private func setupCircleLayers() {
@@ -116,6 +119,7 @@ class ViewController: UIViewController {
         //animateCircle()
     }
 }
+
 extension ViewController: URLSessionDownloadDelegate {
     
     private func beginDownloadingFile() {
